@@ -25,8 +25,10 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "./components/ui/resizable"
+import { ThemeProvider } from "./comps/theme-provider"
 import * as React from "react"
 import './App.css'
+import { ModeToggle } from './comps/mode-toggle'
 
 const tags = Array.from({ length: 50 }).map(
   (_, i, a) => `v1.2.0-beta.${a.length - i}`
@@ -37,6 +39,8 @@ function App() {
 
   return (
     <>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <ModeToggle />
       <Button >Click me</Button>
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
@@ -136,6 +140,7 @@ function App() {
         </ResizablePanelGroup>
       </ResizablePanel>
     </ResizablePanelGroup>
+    </ThemeProvider>
     </>
   )
 }
