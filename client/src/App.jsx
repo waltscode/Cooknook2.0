@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { ThemeProvider } from "./comps/theme-provider"
-import * as React from "react"
+import React from 'react'
 import './App.css'
 
 
