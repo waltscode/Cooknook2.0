@@ -36,6 +36,19 @@ body {}
     font-style: normal;
 }
 
+.companies {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.companies img {
+    height: 100px; /* Adjust this value as needed */
+    width: auto;
+    object-fit: contain;
+}
 nav {
     width: 100%;
     /* position: fixed; */
