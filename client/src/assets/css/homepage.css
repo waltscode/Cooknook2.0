@@ -4,21 +4,36 @@
     box-sizing: border-box;
 }
 
-body {
-    
-}
+body {}
 
 .bkg {
     background-image: url('/images/cooknookbackg.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 100vh;
+    height: 50vh;
     width: 100%;
-   
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.hero-pic {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-text {
+    color: white;
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    
+    font-family: "Licorice", cursive;
+    
+    font-style: normal;
 }
 
 nav {
@@ -29,7 +44,9 @@ nav {
     /* z-index: 999; Ensure it's above other content */
 }
 
-nav > div {
-    padding-left: 20px; /* Adjust as needed */
-    padding-right: 20px; /* Adjust as needed */
+nav>div {
+    padding-left: 20px;
+    /* Adjust as needed */
+    padding-right: 20px;
+    /* Adjust as needed */
 }

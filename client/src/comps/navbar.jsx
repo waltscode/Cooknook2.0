@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {ChefHat} from '../comps/icons'
 import {
     Cloud,
     CreditCard,
@@ -60,7 +61,7 @@ function Navbar() {
                     </div>
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="flex flex-shrink-0 items-center">
-                            <img className="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+                            <ChefHat className="h-8 w-8 text-white" />
                         </div>
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
