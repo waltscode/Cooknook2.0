@@ -1,4 +1,5 @@
 import Categories from '../comps/checkbox.jsx';
+import PushCards from "../comps/push-cards";
 
 export default function Recipes() {
 
@@ -8,7 +9,7 @@ export default function Recipes() {
             <Categories />
         </div>
         <div className="col-span-5">
-            <p>yo</p>
+            <PushCards />
         </div>
     </div>
     )
