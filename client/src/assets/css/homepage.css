@@ -11,7 +11,7 @@ body {}
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    height: 50vh;
+    height: 40vh;
     width: 100%;
     display: flex;
     justify-content: center;
@@ -27,12 +27,10 @@ body {}
 
 .hero-text {
     color: white;
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
-    
     font-family: "Licorice", cursive;
-    
     font-style: normal;
 }
 
@@ -45,21 +43,17 @@ body {}
 }
 
 .companies img {
-    height: 100px; /* Adjust this value as needed */
+    height: 80px;
+    /* Adjust this value as needed */
     width: auto;
     object-fit: contain;
 }
-nav {
-    width: 100%;
-    /* position: fixed; */
-    top: 0;
-    left: 0;
-    /* z-index: 999; Ensure it's above other content */
-}
 
-nav>div {
-    padding-left: 20px;
-    /* Adjust as needed */
-    padding-right: 20px;
-    /* Adjust as needed */
+.company-bkg {
+    background-color: rgba(255, 165, 102, 0.8);
+    padding: 1rem;
+    border-radius: 10px;
+
+    margin-top: 1rem;
+    margin-bottom: 1rem;
 }
