@@ -6,6 +6,7 @@ import {
     ResizablePanel,
     ResizablePanelGroup,
 } from "../components/ui/resizable"
+
 export default function Home() {
 
     return (
@@ -47,6 +48,7 @@ export default function Home() {
                     </ResizablePanel>
                 </ResizablePanelGroup>
             </div>
+            
         </div>
     )
 }

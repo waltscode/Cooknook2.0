@@ -43,14 +43,13 @@ body {}
 }
 
 .companies img {
-    height: 80px;
-    /* Adjust this value as needed */
-    width: auto;
+    height: 65px;
+       width: auto;
     object-fit: contain;
 }
 
 .company-bkg {
-    background-color: rgba(255, 165, 102, 0.8);
+    background-color: rgba(255, 165, 102, 0.75);
     padding: 1rem;
     border-radius: 10px;
 
