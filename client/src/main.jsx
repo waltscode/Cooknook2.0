@@ -11,6 +11,8 @@ import Recipes from './pages/Recipes.jsx';
 import Profile from './pages/Profile.jsx';
 import ErrorPage from './pages/ErrorPage.jsx';
 import AboutMe from './pages/AboutMe.jsx';
+import Login from './pages/Login.jsx';
+import SignUp from './pages/SignUp.jsx';
 
 const router = createBrowserRouter([
   {
@@ -33,6 +35,14 @@ const router = createBrowserRouter([
       {
         path: '/about',
         element: <AboutMe />,
+      },
+      {
+        path: '/login',
+        element: <Login />,
+      },
+      {
+        path: '/signup',
+        element: <SignUp />,
       }
     ],
   },
