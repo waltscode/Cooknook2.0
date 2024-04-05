@@ -1,5 +1,6 @@
 import Categories from '../comps/checkbox.jsx';
 import PushCards from "../comps/push-cards";
+import {Cara} from "../comps/carousel";
 
 export default function Recipes() {
 
@@ -10,6 +11,7 @@ export default function Recipes() {
         </div>
         <div className="col-span-5">
             <PushCards />
+            <Cara />
         </div>
     </div>
     )

@@ -56,3 +56,8 @@ body {}
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
+
+.recipe-ava {
+    height: 300px;
+    width: 300px;
+}
