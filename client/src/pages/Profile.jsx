@@ -28,6 +28,7 @@ import {
 import { Image } from "@nextui-org/react";
 import PushCards from "../comps/push-cards";
 import {AvatarPic} from "../comps/avatar";
+import React from "react";
 
 
 const tags = Array.from({ length: 50 }).map(
@@ -142,8 +143,8 @@ export default function Profile() {
                 alt="NextUI Fruit Image with Zoom"
                 src="https://nextui-docs-v2.vercel.app/images/fruit-1.jpeg"
             />
-            <PushCards />
-<AvatarPic ClassName='recipe-ava' />
+         
+<AvatarPic className='recipe-ava' />
 
         </div>
     )

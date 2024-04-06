@@ -9,7 +9,8 @@ import { searchSpoonacularById } from '../utils/API'
 import { CheckboxGroup, Checkbox } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
-
+import { ScrollArea } from "../components/ui/scroll-area"
+import { Separator } from "../components/ui/separator"
 
 
 
@@ -66,6 +67,10 @@ export default function Recipes() {
     // Function to close the larger card
     const handleClose = () => {
         setSelectedRecipe(null);
+    };
+
+    const capitalizeFirstLetter = (string) => {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
     return (
@@ -165,30 +170,39 @@ export default function Recipes() {
             {/* Display the LargerCard component when selectedRecipe is not null */}
             {selectedRecipe && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-4 rounded-lg">
-                        <h2>{selectedRecipe.title}</h2>
-                        <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full" />
-                        <p>{selectedRecipe.description}</p>
-                        {/* Ingredients */}
-                        {selectedRecipe.additionalInfo && (
-                            <div>
-                                <h3>Ingredients:</h3>
-                                <ul>
-                                    {selectedRecipe.additionalInfo.extendedIngredients.map(ingredient => (
-                                        <li key={ingredient.id}>{ingredient.originalName} </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                        {/* Additional information */}
-                        {selectedRecipe.additionalInfo && (
-                            <div>
-                                <p>Preparation Time: {selectedRecipe.additionalInfo.preparationTime}</p>
-                                <p>Servings: {selectedRecipe.additionalInfo.servings}</p>
-                                {/* Add more details as needed */}
-                            </div>
-                        )}
-                        <button onClick={handleClose}>Close</button>
+                    <div className="bg-white p-4 rounded-lg flex">
+                        {/* Left Section: Image */}
+                        <div className="w-1/2">
+                            <h2>{selectedRecipe.title}</h2>
+                            <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full" />
+                            <p>{selectedRecipe.description}</p>
+                        </div>
+                        {/* Right Section: Recipe Details */}
+                        <div className="w-1/2 ml-4">
+                            {/* Ingredients */}
+                            <ScrollArea className="h-72 rounded-md border">
+                                <div className="p-4">
+                                    <h4 className="mb-4 text-sm font-medium leading-none">Ingredients</h4>
+                                    <ul className="list-disc pl-4">
+                                        {selectedRecipe.additionalInfo && selectedRecipe.additionalInfo.extendedIngredients.map((ingredient, index) => (
+                                            <React.Fragment key={ingredient.id}>
+                                                <li className="text-sm text-left">{capitalizeFirstLetter(ingredient.originalName)}</li>
+                                                {index !== selectedRecipe.additionalInfo.extendedIngredients.length - 1 && <Separator className="my-2" />}
+                                            </React.Fragment>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </ScrollArea>
+                            {/* Additional information */}
+                            {selectedRecipe.additionalInfo && (
+                                <div>
+                                    <p>Preparation Time: {selectedRecipe.additionalInfo.preparationTime}</p>
+                                    <p>Servings: {selectedRecipe.additionalInfo.servings}</p>
+                                    {/* Add more details as needed */}
+                                </div>
+                            )}
+                            <button onClick={handleClose}>Close</button>
+                        </div>
                     </div>
                 </div>
             )}
