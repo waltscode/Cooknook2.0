@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button"
 import {DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger,} from "../components/ui/dropdown-menu"
 import { ModeToggle } from './mode-toggle';
 import {AvatarPic} from './avatar';
+import Auth from "../utils/auth";
 
 
 
@@ -14,6 +15,10 @@ function Navbar() {
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
+
+    const handleLogout = () => {
+        Auth.logout();
+    }
 
     return (
         <nav className="bg-gray-800">
@@ -81,7 +86,7 @@ function Navbar() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
                                         <LogOut className="mr-2 h-4 w-4" />
-                                        <span>Log out</span>
+                                        <span onClick = {handleLogout} >Log out</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

@@ -2,10 +2,43 @@ import React from "react";
 import { Input } from "@nextui-org/react";
 import { EyeFilledIcon } from "../comps/EyeFilledIcon";
 import { EyeSlashFilledIcon } from "../comps/EyeSlashFilledIcon";
+import { loginUser } from "../utils/API";
+import {useState} from "react";
+import Auth from "../utils/auth";
+import {useNavigate} from "react-router-dom";
 
 
 export default function Login() {
     const [isVisible, setIsVisible] = React.useState(false);
+
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState({
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setUserData({
+            ...userData,
+            [name]: value,
+        });
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            console.log(userData);
+            const response = await loginUser(userData);
+            console.log(response);
+            const data = await response.json();
+            console.log(data);
+            Auth.login(data.token)
+            navigate('/profile');
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -21,6 +54,9 @@ export default function Login() {
                     <input
                         id="email"
                         type="email"
+                        name='email'
+                        value = {userData.email}
+                        onChange={handleChange}
                         className="w-full px-3 py-2 placeholder-gray-400 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
                         placeholder="Enter your email address"
                     />
@@ -35,6 +71,9 @@ export default function Login() {
                         <input
                             id="password"
                             type={isVisible ? "text" : "password"}
+                            name='password'
+                            value = {userData.password}
+                            onChange={handleChange}
                             className="w-full px-3 py-2 placeholder-gray-400 rounded-md focus:outline-none text-gray-700"
                             placeholder="Enter your password"
                         />
@@ -53,7 +92,7 @@ export default function Login() {
                 </div>
 
                 {/* Sign In Button */}
-                <button className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300 ease-in-out">
+                <button onClick={handleFormSubmit} className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300 ease-in-out">
                     Sign In
                 </button>
 

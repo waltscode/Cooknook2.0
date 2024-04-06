@@ -1,7 +1,7 @@
 import React from "react";
 import {Card, CardBody, CardFooter, CardHeader, Image, Button} from "@nextui-org/react";
 
-export default function PushCards() {
+export default function PushCards({recipes}) {
   const list = [
     {
       title: "Orange",
@@ -48,7 +48,7 @@ export default function PushCards() {
   return (
     
     <div className="gap-2 grid grid-cols-2 sm:grid-cols-4">
-    {list.map((item, index) => (
+    {recipes.map((item, index) => (
       <Card shadow="sm" key={index} isPressable onPress={() => console.log("item pressed")}
       isFooterBlurred
       radius="lg"
