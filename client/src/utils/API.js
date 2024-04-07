@@ -56,3 +56,11 @@ export const searchSpoonacularById = (id) => {
     },
   });
 }
+
+export const searchSpoonacularByIdSteps = (id) => {
+  return fetch(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=b24e8ce68b334fc697f9ae6bcbe7fd4f&stepBreakdown=true`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}

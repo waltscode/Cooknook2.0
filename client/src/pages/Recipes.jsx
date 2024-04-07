@@ -5,7 +5,7 @@ import { useState } from 'react';
 import React from "react";
 import { Button } from '../components/ui/button'
 import { searchSpoonacular } from '../utils/API'
-import { searchSpoonacularById } from '../utils/API'
+import { searchSpoonacularById, searchSpoonacularByIdSteps } from '../utils/API'
 import { CheckboxGroup, Checkbox } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
@@ -43,6 +43,8 @@ export default function Recipes() {
     const handleClick = (recipe) => {
         setSelectedRecipe(recipe);
         console.log('CLICKED');
+
+        // Fetch ingredients
         searchSpoonacularById(recipe.id)
             .then(response => {
                 if (response.ok) {
@@ -52,17 +54,43 @@ export default function Recipes() {
             })
             .then(data => {
                 // Set the retrieved recipe information into state
-                setSelectedRecipe({ ...recipe, additionalInfo: data });
-                console.log('spoonID response', data);
+                setSelectedRecipe({ ...recipe, additionalInfo: { ...data, ingredients: data.extendedIngredients } });
+                console.log('Ingredients response:', data);
                 const ingredients = data.extendedIngredients.map(ingredient => ingredient.name);
                 console.log('Ingredients:', ingredients);
+
+                // Fetch instructions
+                return searchSpoonacularByIdSteps(recipe.id);
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                // Log the instructions response
+                console.log('Instructions response:', data);
+
+                // Extract and format steps
+                const steps = data[0].steps; // Access the steps array from the first item of the array
+                const formattedSteps = steps.map(step => ` ${step.step}`);
+                console.log('Formatted steps:', formattedSteps);
+
+                // Merge instructions into the existing selected recipe
+                setSelectedRecipe(prevRecipe => ({
+                    ...prevRecipe,
+                    additionalInfo: {
+                        ...prevRecipe.additionalInfo,
+                        instructions: formattedSteps
+                    }
+                }));
             })
             .catch(error => {
                 // Handle errors
                 console.error('There was a problem with the fetch operation:', error);
             });
     };
-
 
     // Function to close the larger card
     const handleClose = () => {
@@ -170,42 +198,66 @@ export default function Recipes() {
             {/* Display the LargerCard component when selectedRecipe is not null */}
             {selectedRecipe && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-4 rounded-lg flex">
+                    <div className="bg-white p-4 rounded-lg flex w-1/2">
                         {/* Left Section: Image */}
-                        <div className="w-1/2">
-                            <h2>{selectedRecipe.title}</h2>
+                        <div className="w-2/4">
+                            <h2 className="text-gray-600">{selectedRecipe.title}</h2>
                             <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full" />
                             <p>{selectedRecipe.description}</p>
                         </div>
                         {/* Right Section: Recipe Details */}
-                        <div className="w-1/2 ml-4">
+                        <div className="w-1/4 ml-4">
                             {/* Ingredients */}
                             <ScrollArea className="h-72 rounded-md border">
                                 <div className="p-4">
-                                    <h4 className="mb-4 text-sm font-medium leading-none">Ingredients</h4>
+                                    <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Ingredients</h4>
                                     <ul className="list-disc pl-4">
                                         {selectedRecipe.additionalInfo && selectedRecipe.additionalInfo.extendedIngredients.map((ingredient, index) => (
                                             <React.Fragment key={ingredient.id}>
-                                                <li className="text-sm text-left">{capitalizeFirstLetter(ingredient.originalName)}</li>
+                                                <li className="text-sm text-left text-gray-600">
+                                                    {capitalizeFirstLetter(ingredient.originalName)} - {ingredient.measures.us.amount} {ingredient.measures.us.unitShort}
+                                                </li>
                                                 {index !== selectedRecipe.additionalInfo.extendedIngredients.length - 1 && <Separator className="my-2" />}
                                             </React.Fragment>
                                         ))}
                                     </ul>
                                 </div>
                             </ScrollArea>
-                            {/* Additional information */}
-                            {selectedRecipe.additionalInfo && (
-                                <div>
-                                    <p>Preparation Time: {selectedRecipe.additionalInfo.preparationTime}</p>
-                                    <p>Servings: {selectedRecipe.additionalInfo.servings}</p>
-                                    {/* Add more details as needed */}
-                                </div>
-                            )}
-                            <button onClick={handleClose}>Close</button>
                         </div>
+                        <div className="w-1/4 ml-4">
+                            <ScrollArea className="h-72 rounded-md border">
+                                <div className="p-4">
+                                    <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Instructions</h4>
+                                    <ol className="list-decimal pl-4">
+                                        {selectedRecipe.additionalInfo && Array.isArray(selectedRecipe.additionalInfo.instructions) &&
+                                            selectedRecipe.additionalInfo.instructions.map((instruction, index) => (
+                                                <React.Fragment key={index}>
+                                                    <li className="text-sm text-left text-gray-600">
+                                                        {instruction}
+                                                    </li>
+                                                    {index !== selectedRecipe.additionalInfo.instructions.length - 1 && <Separator className="my-2" />}
+                                                </React.Fragment>
+                                            ))
+                                        }
+                                    </ol>
+                                </div>
+                            </ScrollArea>
+                        </div>
+                        <Button onClick={handleClose}>Close</Button>
+
                     </div>
                 </div>
             )}
         </div>
     );
 }
+
+
+/* Additional information
+                           {selectedRecipe.additionalInfo && (
+                               <div>
+                                   <p>Preparation Time: {selectedRecipe.additionalInfo.preparationTime}</p>
+                                   <p>Servings: {selectedRecipe.additionalInfo.servings}</p>
+                                   {/* Add more details as needed */
+/* </div> */
+/* )} */
