@@ -1,16 +1,15 @@
 // import Categories from '../comps/checkbox.jsx';
-import PushCards from "../comps/push-cards";
-import { Cara } from "../comps/carousel";
+
 import { useState } from 'react';
 import React from "react";
 import { Button } from '../components/ui/button'
-import { searchSpoonacular } from '../utils/API'
-import { searchSpoonacularById, searchSpoonacularByIdSteps } from '../utils/API'
+import { searchSpoonacular, searchSpoonacularById } from '../utils/API';
 import { CheckboxGroup, Checkbox } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
-import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
+import { Card, CardBody, CardFooter, Image, Input } from "@nextui-org/react";
 import { ScrollArea } from "../components/ui/scroll-area"
 import { Separator } from "../components/ui/separator"
+import { SearchIcon } from "../comps/searchIcon";
 
 
 
@@ -43,55 +42,41 @@ export default function Recipes() {
     const handleClick = (recipe) => {
         setSelectedRecipe(recipe);
         console.log('CLICKED');
-
-        // Fetch ingredients
+    
         searchSpoonacularById(recipe.id)
             .then(response => {
-                if (response.ok) {
-                    return response.json();
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
                 }
-                throw new Error('Network response was not ok.');
+                return response.json();
             })
             .then(data => {
+                // Log the entire fetched object
+                console.log('Fetched Data:', data);
+    
+                // Extract and format steps into arrays
+                const instructions = data.analyzedInstructions.flatMap(instruction => {
+                    return instruction.steps.map(step => step.step);
+                });
+    
                 // Set the retrieved recipe information into state
-                setSelectedRecipe({ ...recipe, additionalInfo: { ...data, ingredients: data.extendedIngredients } });
-                console.log('Ingredients response:', data);
-                const ingredients = data.extendedIngredients.map(ingredient => ingredient.name);
-                console.log('Ingredients:', ingredients);
-
-                // Fetch instructions
-                return searchSpoonacularByIdSteps(recipe.id);
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Network response was not ok.');
-            })
-            .then(data => {
-                // Log the instructions response
-                console.log('Instructions response:', data);
-
-                // Extract and format steps
-                const steps = data[0].steps; // Access the steps array from the first item of the array
-                const formattedSteps = steps.map(step => ` ${step.step}`);
-                console.log('Formatted steps:', formattedSteps);
-
-                // Merge instructions into the existing selected recipe
-                setSelectedRecipe(prevRecipe => ({
-                    ...prevRecipe,
+                setSelectedRecipe({
+                    ...recipe,
                     additionalInfo: {
-                        ...prevRecipe.additionalInfo,
-                        instructions: formattedSteps
+                        ...data,
+                        ingredients: data.extendedIngredients,
+                        instructions: instructions
                     }
-                }));
+                });
+    
+                console.log('Ingredients:', data.extendedIngredients.map(ingredient => ingredient.name));
+                console.log('Instructions:', instructions);
             })
             .catch(error => {
                 // Handle errors
                 console.error('There was a problem with the fetch operation:', error);
             });
     };
-
     // Function to close the larger card
     const handleClose = () => {
         setSelectedRecipe(null);
@@ -101,9 +86,32 @@ export default function Recipes() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 
+    function parseSummary(summary) {
+        // Replace <b> tags with bold formatting
+        let formattedSummary = summary.replace(/<\/?b>/g, '**');
+    
+        // Replace <a> tags with clickable links
+        formattedSummary = formattedSummary.replace(/<a href="(.*?)">(.*?)<\/a>/g, '[$2]($1)');
+    
+        // Remove all other HTML tags
+        return formattedSummary.replace(/<[^>]+>/g, '');
+    }
+
     return (
         <div className="grid grid-cols-6 gap-4">
             <div className="col-span-1">
+                <Input
+                    classNames={{
+                        base: "max-w-full sm:max-w-[10rem] h-10",
+                        mainWrapper: "h-full",
+                        input: "text-small",
+                        inputWrapper: "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+                    }}
+                    placeholder="Type to search..."
+                    size="sm"
+                    startContent={<SearchIcon size={18} />}
+                    type="search"
+                />
                 <Accordion type="single" collapsible>
                     <AccordionItem value="item-1">
                         <AccordionTrigger>American Cuisine</AccordionTrigger>
@@ -168,9 +176,13 @@ export default function Recipes() {
                 </Accordion>
             </div>
 
+
+
             {/* Display the retrieved recipes */}
             {/* Recipe cards column */}
+
             <div className="col-span-5 grid grid-cols-5 gap-4">
+
                 {/* Display the retrieved recipes */}
                 {recipes.map(recipe => (
                     <div key={recipe.id} onClick={() => handleClick(recipe)}> {/* Add onClick event to the recipe card */}
@@ -197,57 +209,76 @@ export default function Recipes() {
 
             {/* Display the LargerCard component when selectedRecipe is not null */}
             {selectedRecipe && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-4 rounded-lg flex w-1/2">
-                        {/* Left Section: Image */}
-                        <div className="w-2/4">
-                            <h2 className="text-gray-600">{selectedRecipe.title}</h2>
-                            <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full" />
-                            <p>{selectedRecipe.description}</p>
-                        </div>
-                        {/* Right Section: Recipe Details */}
-                        <div className="w-1/4 ml-4">
-                            {/* Ingredients */}
-                            <ScrollArea className="h-72 rounded-md border">
-                                <div className="p-4">
-                                    <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Ingredients</h4>
-                                    <ul className="list-disc pl-4">
-                                        {selectedRecipe.additionalInfo && selectedRecipe.additionalInfo.extendedIngredients.map((ingredient, index) => (
-                                            <React.Fragment key={ingredient.id}>
-                                                <li className="text-sm text-left text-gray-600">
-                                                    {capitalizeFirstLetter(ingredient.originalName)} - {ingredient.measures.us.amount} {ingredient.measures.us.unitShort}
-                                                </li>
-                                                {index !== selectedRecipe.additionalInfo.extendedIngredients.length - 1 && <Separator className="my-2" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </ScrollArea>
-                        </div>
-                        <div className="w-1/4 ml-4">
-                            <ScrollArea className="h-72 rounded-md border">
-                                <div className="p-4">
-                                    <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Instructions</h4>
-                                    <ol className="list-decimal pl-4">
-                                        {selectedRecipe.additionalInfo && Array.isArray(selectedRecipe.additionalInfo.instructions) &&
-                                            selectedRecipe.additionalInfo.instructions.map((instruction, index) => (
-                                                <React.Fragment key={index}>
-                                                    <li className="text-sm text-left text-gray-600">
-                                                        {instruction}
-                                                    </li>
-                                                    {index !== selectedRecipe.additionalInfo.instructions.length - 1 && <Separator className="my-2" />}
-                                                </React.Fragment>
-                                            ))
-                                        }
-                                    </ol>
-                                </div>
-                            </ScrollArea>
-                        </div>
-                        <Button onClick={handleClose}>Close</Button>
-
-                    </div>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-4 rounded-lg flex flex-col w-1/2">
+            {/* First Row: Established Formatting */}
+            <div className="flex justify-between mb-4">
+                {/* Image Section */}
+                <div className="w-2/4">
+                    <h2 className="text-gray-600">{selectedRecipe.title}</h2>
+                    <img src={selectedRecipe.image} alt={selectedRecipe.title} className="w-full h-96" />
+                    <p>{selectedRecipe.description}</p>
                 </div>
-            )}
+                {/* Ingredients Section */}
+                <div className="w-1/4 ml-4">
+                    <ScrollArea className="h-96 rounded-md border">
+                        <div className="p-4">
+                            <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Ingredients</h4>
+                            <ul className="list-disc pl-4">
+                                {selectedRecipe.additionalInfo && selectedRecipe.additionalInfo.extendedIngredients.map((ingredient, index) => (
+                                    <React.Fragment key={ingredient.id}>
+                                        <li className="text-sm text-left text-gray-600">
+                                            {capitalizeFirstLetter(ingredient.originalName)} - {ingredient.measures.us.amount} {ingredient.measures.us.unitShort}
+                                        </li>
+                                        {index !== selectedRecipe.additionalInfo.extendedIngredients.length - 1 && <Separator className="my-2" />}
+                                    </React.Fragment>
+                                ))}
+                            </ul>
+                        </div>
+                    </ScrollArea>
+                </div>
+                 {/* Instructions Section */}
+                 <div className="w-1/4 ml-4">
+                 <ScrollArea className="h-96 rounded-md border mb-4">
+                    <div className="p-4">
+                        <h4 className="mb-4 text-sm font-medium leading-none text-gray-600">Instructions</h4>
+                        <ol className="list-decimal pl-4">
+                            {selectedRecipe.additionalInfo && Array.isArray(selectedRecipe.additionalInfo.instructions) &&
+                                selectedRecipe.additionalInfo.instructions.map((instruction, index) => (
+                                    <React.Fragment key={index}>
+                                        {Array.isArray(instruction) ? (
+                                            instruction.map((step, stepIndex) => (
+                                                <li className="text-sm text-left text-gray-600" key={stepIndex}>
+                                                    <span className="font-bold">{stepIndex + 1}.</span> {step}
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <li className="text-sm text-left text-gray-600">
+                                                {instruction}
+                                            </li>
+                                        )}
+                                        {index !== selectedRecipe.additionalInfo.instructions.length - 1 && <Separator className="my-2" />}
+                                    </React.Fragment>
+                                ))
+                            }
+                        </ol>
+                    </div>
+                </ScrollArea>
+                </div>
+            </div>
+            {/* Second Row: Instructions and Additional Paragraph */}
+            <div className="mb-4">
+               
+                {/* Additional Paragraph */}
+                <h4 className="mt-8 mb-4 text-sm font-medium leading-none text-gray-600">Summary</h4>
+                <p className='text-gray-600'>{selectedRecipe.additionalInfo && parseSummary(selectedRecipe.additionalInfo.summary)}</p>
+            </div>
+            {/* Close Button */}
+            <Button onClick={handleClose}>Close</Button>
+        </div>
+    </div>
+)}
+           
         </div>
     );
 }

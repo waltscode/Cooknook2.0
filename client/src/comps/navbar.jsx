@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { ChefHat } from '../comps/icons'
-import { CreditCard, Github, LogOut, User} from "lucide-react"
+import { CreditCard, Github, LogOut, User } from "lucide-react"
 import { Button } from "../components/ui/button"
-import {DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger,} from "../components/ui/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "../components/ui/dropdown-menu"
 import { ModeToggle } from './mode-toggle';
-import {AvatarPic} from './avatar';
+import { AvatarPic } from './avatar';
 import Auth from "../utils/auth";
+import { SearchIcon } from "./searchIcon";
+import { Input } from "@nextui-org/react";
 
 
 
@@ -86,7 +88,7 @@ function Navbar() {
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem>
                                         <LogOut className="mr-2 h-4 w-4" />
-                                        <span onClick = {handleLogout} >Log out</span>
+                                        <span onClick={handleLogout} >Log out</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>
