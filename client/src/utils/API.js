@@ -38,34 +38,18 @@ export const searchSpoonacular = ( cuisine) => {
   });
   }
 
-
-
-
-// make a search to google books api
-// https://www.googleapis.com/books/v1/volumes?q=harry+potter
-// export const searchSpoonacular = (query, cuisine) => {
-//   return fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=10f834d78e4841f987607050deb2e9af&cuisine=${cuisine}`, {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   });
-// };
-
-// export const searchSpoonacular = (query, cuisine) => {
-//   return fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=a5d7286f6b864fef82d1dd50060278cb&cuisine=${cuisine}&query=${query}`, {
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//   });
-// };
-
 export const searchSpoonacularById = (id) => {
-  return fetch(`https://api.spoonacular.com/recipes/${id}/information?apiKey=10f834d78e4841f987607050deb2e9af`, {
+  return fetch(`/api/recipes/${id}`, {
+    method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     },
   });
 }
+
+
+
+
 
 export const savedRecipes = (recipeData, token) => {
   return fetch('/api/recipes/saved', {
