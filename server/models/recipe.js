@@ -57,6 +57,14 @@ const recipeSchema = new Schema(
             type: String,
             required: true,
         },
+        recipe_id: {
+            type: Number,
+            required: true,
+        },
+        image: {
+            type: String,
+            required: true,
+        },
 
         
         comments: [

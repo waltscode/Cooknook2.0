@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import React from "react";
 import { Button } from '../components/ui/button'
-import { searchSpoonacular, searchSpoonacularById } from '../utils/API';
-import { CheckboxGroup, Checkbox } from "@nextui-org/react";
+import { savedRecipes, searchSpoonacular, searchSpoonacularById } from '../utils/API';
+import { CheckboxGroup, Checkbox, image } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
 import { Card, CardBody, CardFooter, Image, Input } from "@nextui-org/react";
 import { ScrollArea } from "../components/ui/scroll-area"
 import { Separator } from "../components/ui/separator"
 import { SearchIcon } from "../comps/searchIcon";
+import Auth from "../utils/auth";
 
 
 
@@ -19,9 +20,53 @@ import { SearchIcon } from "../comps/searchIcon";
 export default function Recipes() {
     const [recipes, setRecipes] = useState([]);
     const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+
+
+    const handleSaveRecipe = (recipeData) => {
+        console.log('Saving Recipe:', recipeData);
+        const obj = {
+            recipeName: recipeData.title,
+            ingredients: recipeData.additionalInfo.ingredients.map(ingredient => ({ ingredientName: ingredient.name, quantity: ingredient.measures.us.amount, unit: ingredient.measures.us.unitShort })),
+            instructions: recipeData.additionalInfo.instructions.map(instruction => ({ step: instruction.number, instruction: instruction.step })),
+            recipe_id: recipeData.id,
+            category: recipeData.additionalInfo.cuisines,
+            image: recipeData.image,
+        };
+        console.log('recipeName:', obj.recipeName);
+        console.log('ingredients:', obj.ingredients);
+        console.log('instructions:', obj.instructions);
+        console.log('recipe_id:', obj.recipe_id);
+        console.log('category:', obj.category);
+        console.log('image:', obj.image);
+    
+        // Get token
+        const token = Auth.loggedIn() ? Auth.getToken() : null;
+    
+        if (!token) {
+            console.error('User not authenticated.');
+            return;
+        }
+    
+        savedRecipes(recipeData, token)
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Saved Recipe:', data);
+                // Do something with the saved recipe data if needed
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    };
+
     const handleButtonClick = (cuisine) => {
         // Call the API function with the cuisine parameter
-        searchSpoonacular("", cuisine)
+        searchSpoonacular(cuisine)
             .then(response => {
                 if (response.ok) {
                     return response.json();
@@ -275,6 +320,7 @@ export default function Recipes() {
             </div>
             {/* Close Button */}
             <Button onClick={handleClose}>Close</Button>
+            <Button onClick={()=>handleSaveRecipe(selectedRecipe)}>Save</Button>
         </div>
     </div>
 )}

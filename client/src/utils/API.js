@@ -28,18 +28,28 @@ export const loginUser = (userData) => {
   });
 };
 
+export const searchSpoonacular = ( cuisine) => {
+  return fetch (`/api/recipes/cuisine/${cuisine}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    
+  });
+  }
+
 
 
 
 // make a search to google books api
 // https://www.googleapis.com/books/v1/volumes?q=harry+potter
-export const searchSpoonacular = (query, cuisine) => {
-  return fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=10f834d78e4841f987607050deb2e9af&cuisine=${cuisine}`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-};
+// export const searchSpoonacular = (query, cuisine) => {
+//   return fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=10f834d78e4841f987607050deb2e9af&cuisine=${cuisine}`, {
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//   });
+// };
 
 // export const searchSpoonacular = (query, cuisine) => {
 //   return fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=a5d7286f6b864fef82d1dd50060278cb&cuisine=${cuisine}&query=${query}`, {
@@ -57,9 +67,9 @@ export const searchSpoonacularById = (id) => {
   });
 }
 
-export const saveRecipe = (recipeData, token) => {
-  return fetch('/api/users', {
-    method: 'PUT',
+export const savedRecipes = (recipeData, token) => {
+  return fetch('/api/recipes/saved', {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
