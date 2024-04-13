@@ -51,14 +51,14 @@ export const searchSpoonacularById = (id) => {
 
 
 
-export const savedRecipes = (recipeData, token) => {
+export const saveRecipe = (recipe, token) => {
   return fetch('/api/recipes/saved', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ recipeData }),
+    body: JSON.stringify({ recipe }),
   });
 };
 

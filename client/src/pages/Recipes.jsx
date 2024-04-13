@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import React from "react";
 import { Button } from '../components/ui/button'
-import { savedRecipes, searchSpoonacular, searchSpoonacularById } from '../utils/API';
+import { saveRecipe, searchSpoonacular, searchSpoonacularById } from '../utils/API';
 import { CheckboxGroup, Checkbox, image } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
 import { Card, CardBody, CardFooter, Image, Input } from "@nextui-org/react";
@@ -23,15 +23,15 @@ export default function Recipes() {
 
 
 
-    const handleSaveRecipe = (recipeData) => {
-        console.log('Saving Recipe:', recipeData);
+    const handleSaveRecipe = (recipe) => {
+        console.log('Saving Recipe:', recipe);
         const obj = {
-            recipeName: recipeData.title,
-            ingredients: recipeData.additionalInfo.ingredients.map(ingredient => ({ ingredientName: ingredient.name, quantity: ingredient.measures.us.amount, unit: ingredient.measures.us.unitShort })),
-            instructions: recipeData.additionalInfo.instructions.map(instruction => ({ step: instruction.number, instruction: instruction.step })),
-            recipe_id: recipeData.id,
-            category: recipeData.additionalInfo.cuisines,
-            image: recipeData.image,
+            recipeName: recipe.title,
+            ingredients: recipe.additionalInfo.ingredients.map(ingredient => ({ ingredientName: ingredient.name, quantity: ingredient.measures.us.amount, unit: ingredient.measures.us.unitShort })),
+            instructions: recipe.additionalInfo.instructions.map(instruction => ({ step: instruction.number, instruction: instruction.step })),
+            recipe_id: recipe.id,
+            category: recipe.additionalInfo.cuisines,
+            image: recipe.image,
         };
         console.log('recipeName:', obj.recipeName);
         console.log('ingredients:', obj.ingredients);
@@ -48,7 +48,7 @@ export default function Recipes() {
             return;
         }
     
-        savedRecipes(recipeData, token)
+        saveRecipe(recipe, token)
             .then(response => {
                 if (response.ok) {
                     return response.json();
