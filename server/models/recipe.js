@@ -12,7 +12,7 @@ const ingredientSchema = new Schema(
         },
         unit: {
             type: String,
-            required: true,
+            required: false,
         },
     },
     {

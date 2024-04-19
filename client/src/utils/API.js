@@ -50,15 +50,15 @@ export const searchSpoonacularById = (id) => {
 
 
 
-
-export const saveRecipe = (recipe, token) => {
+export const saveRecipe = (obj, token) => {
+  console.log('Object to be saved:', obj); // Log obj before sending the request
   return fetch('/api/recipes/saved', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ recipe }),
+    body: JSON.stringify(obj),
   });
 };
 

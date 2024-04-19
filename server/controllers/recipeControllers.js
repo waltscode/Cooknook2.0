@@ -7,6 +7,7 @@ module.exports = {
   
     async saveRecipe({ user, body }, res) {
         console.log(user);
+        console.log(body);
         try {
             const recipe = await Recipe.create(body);
           const updatedUser = await User.findOneAndUpdate(
