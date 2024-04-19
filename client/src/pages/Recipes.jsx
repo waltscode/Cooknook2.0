@@ -24,30 +24,57 @@ export default function Recipes() {
 
 
     const handleSaveRecipe = (recipe) => {
-        console.log('Saving Recipe:', recipe);
-        const obj = {
-            recipeName: recipe.title,
-            ingredients: recipe.additionalInfo.ingredients.map(ingredient => ({ ingredientName: ingredient.name, quantity: ingredient.measures.us.amount, unit: ingredient.measures.us.unitShort })),
-            instructions: recipe.additionalInfo.instructions.map(instruction => ({ step: instruction.number, instruction: instruction.step })),
-            recipe_id: recipe.id,
-            category: recipe.additionalInfo.cuisines,
-            image: recipe.image,
-        };
-        console.log('recipeName:', obj.recipeName);
-        console.log('ingredients:', obj.ingredients);
-        console.log('instructions:', obj.instructions);
-        console.log('recipe_id:', obj.recipe_id);
-        console.log('category:', obj.category);
-        console.log('image:', obj.image);
+        // Destructure the recipe object
+        const {
+            title,
+            additionalInfo: { ingredients, instructions, cuisines },
+            id,
+            image
+        } = recipe;
     
-        // Get token
+        // Map ingredients to the required format
+        const formattedIngredients = ingredients.map(ingredient => ({
+            ingredientName: ingredient.name,
+            quantity: ingredient.measures.us.amount,
+            unit: ingredient.measures.us.unitShort
+        }));
+    
+        // Map instructions to the required format
+        const formattedInstructions = instructions.map(instruction => ({
+            step: instruction.number,
+            instruction: instruction.step
+        }));
+    
+        // Construct the object for the POST request body
+        const requestBody = {
+            recipeName: title,
+            ingredients: formattedIngredients,
+            instructions: formattedInstructions,
+            recipe_id: id,
+            category: cuisines,
+            image: image
+        };
+    
+        // Log the formatted data for debugging
+        console.log('recipeName:', requestBody.recipeName);
+        console.log('Ingredients:', requestBody.ingredients);
+        console.log('Instructions:', requestBody.instructions);
+        console.log('recipe_id:', requestBody.recipe_id);
+        console.log('Category:', requestBody.category);
+        console.log('Image:', requestBody.image);
+    
+        // Get the authentication token
         const token = Auth.loggedIn() ? Auth.getToken() : null;
     
         if (!token) {
             console.error('User not authenticated.');
             return;
         }
+
+        console.log('Request Body:', requestBody);
+        console.log('Token:', token);
     
+        // Save the recipe using the formatted data
         saveRecipe(recipe, token)
             .then(response => {
                 if (response.ok) {
@@ -63,6 +90,7 @@ export default function Recipes() {
                 console.error('There was a problem with the fetch operation:', error);
             });
     };
+
 
     const handleButtonClick = (cuisine) => {
         // Call the API function with the cuisine parameter
@@ -320,7 +348,11 @@ export default function Recipes() {
             </div>
             {/* Close Button */}
             <Button onClick={handleClose}>Close</Button>
-            <Button onClick={()=>handleSaveRecipe(selectedRecipe)}>Save</Button>
+            <Button onClick={() => {
+    console.log("SELECTED RECIPE", selectedRecipe);
+    handleSaveRecipe(selectedRecipe);
+}}>Save</Button>
+            
         </div>
     </div>
 )}

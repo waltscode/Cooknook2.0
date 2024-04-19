@@ -47,23 +47,23 @@ const recipeSchema = new Schema(
     {
         recipeName: {
             type: String,
-            required: true,
+            required: false,
         },
         ingredients: [ingredientSchema],
 
         instructions: [instructionSchema],
 
         category: {
-            type: String,
+            type: [String],
             required: true,
         },
         recipe_id: {
             type: Number,
-            required: true,
+            required: false,
         },
         image: {
             type: String,
-            required: true,
+            required: false,
         },
 
         
