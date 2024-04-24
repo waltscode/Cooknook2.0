@@ -12,7 +12,7 @@ router.route('/').post(authMiddleware, saveRecipe);
     try {
       const apiKey = process.env.SPOONACULAR_API_KEY;
       const { cuisine, query } = req.params;
-      const spoonacularUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&cuisine=${cuisine}`;
+      const spoonacularUrl = `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&cuisine=${cuisine}&number=50`;
       const response = await fetch(spoonacularUrl);
       const data = await response.json();
       console.log(data);
