@@ -4,6 +4,7 @@ import App from './App.jsx'
 import './index.css'
 import './assets/css/navbar.css'
 import './assets/css/homepage.css'
+import './assets/css/profile.css'
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './pages/Home.jsx';
