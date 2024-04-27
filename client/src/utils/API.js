@@ -62,3 +62,11 @@ export const saveRecipe = (obj, token) => {
   });
 };
 
+export const getAllRecipes = () => {
+  return fetch('/api/recipes/saved', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}

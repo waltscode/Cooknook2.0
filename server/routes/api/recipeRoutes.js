@@ -1,11 +1,14 @@
 const router = require('express').Router(); 
-const { saveRecipe, deleteRecipe } = require('../../controllers/recipeControllers');
+const { saveRecipe, deleteRecipe, getAllTheRecipes, getRecipeByTheId } = require('../../controllers/recipeControllers');
 const { authMiddleware } = require('../../utils/auth');
 
 require('dotenv').config();
 
 // Route for the root path '/'
-router.route('/').post(authMiddleware, saveRecipe);
+router.route('/').delete(authMiddleware, deleteRecipe);
+
+router.route('/saved')
+.post(authMiddleware, saveRecipe).get(getAllTheRecipes);
 
   router.route('/cuisine/:cuisine')
   .get(async (req, res) => {
@@ -41,10 +44,13 @@ router.route('/:id')
 );
 
 
-router.route('/saved')
-.post(authMiddleware, saveRecipe);
 
-router.route('/:id')
-  .delete(authMiddleware, deleteRecipe);
+
+
+
+
+
+router.route('/saved/:id')
+  .delete(authMiddleware, deleteRecipe).get(getRecipeByTheId);
 
 module.exports = router;

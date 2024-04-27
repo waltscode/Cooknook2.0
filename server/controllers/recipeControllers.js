@@ -4,6 +4,27 @@ module.exports = {
   // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
   // user comes from `req.user` created in the auth middleware function
 
+  async getAllTheRecipes(req, res) {
+    try {
+      const recipeData = await Recipe.find();
+      res.status(200).json(recipeData);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+
+  async getRecipeByTheId (req, res) {
+    try {
+      const recipeData = await Recipe.findOne({ _id: req.params.id });
+      res.status(200).json(recipeData);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json(err);
+    }
+  },
+
+ 
   
     async saveRecipe({ user, body }, res) {
         console.log(user);

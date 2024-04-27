@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { getMe } from '../utils/API';
+import { getMe, getAllRecipes} from '../utils/API';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Auth from "../utils/auth";
@@ -37,6 +37,24 @@ export default function Profile() {
     }
         , []);
 
+        const handleAllRecipes = () => {
+            getAllRecipes()
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    // Set the retrieved recipes into state
+                    console.log('All Recipes:', data);
+                })
+                .catch(error => {
+                    // Handle errors
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+        };
+    
 
     return (
 
@@ -66,6 +84,7 @@ export default function Profile() {
                             ))}
                            
                         </ul>
+                        <button onClick={handleAllRecipes}>All Recipes</button>
 
 
                     </CardContent>

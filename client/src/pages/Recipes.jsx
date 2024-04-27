@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import React from "react";
 import { Button } from '../components/ui/button'
-import { saveRecipe, searchSpoonacular, searchSpoonacularById } from '../utils/API';
+import { saveRecipe, searchSpoonacular, searchSpoonacularById} from '../utils/API';
 import { CheckboxGroup, Checkbox, image } from "@nextui-org/react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '../components/ui/accordion'
 import { Card, CardBody, CardFooter, Image, Input } from "@nextui-org/react";
@@ -253,6 +253,7 @@ export default function Recipes() {
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
+                
             </div>
 
 
