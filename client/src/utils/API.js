@@ -70,3 +70,12 @@ export const getAllRecipes = () => {
     },
   });
 }
+
+export const getRecipeById = (id) => {
+  return fetch(`/api/recipes/saved/${id}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+}

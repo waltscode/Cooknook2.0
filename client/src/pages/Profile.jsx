@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { getMe, getAllRecipes} from '../utils/API';
+import { getMe, getAllRecipes, getRecipeById } from '../utils/API';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Auth from "../utils/auth";
@@ -11,7 +11,7 @@ import Auth from "../utils/auth";
 
 export default function Profile() {
 
-
+    const [fetchedRecipes, setFetchedRecipes] = useState([]);
     const [userData, setUserData] = useState({
         email: "",
         password: "",
@@ -27,7 +27,7 @@ export default function Profile() {
         getMe(Auth.getToken())
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                console.log('GET ME', data);
                 setUserData(data);
             })
             .catch(err => {
@@ -37,24 +37,57 @@ export default function Profile() {
     }
         , []);
 
-        const handleAllRecipes = () => {
-            getAllRecipes()
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Network response was not ok.');
-                })
-                .then(data => {
-                    // Set the retrieved recipes into state
-                    console.log('All Recipes:', data);
-                })
-                .catch(error => {
-                    // Handle errors
-                    console.error('There was a problem with the fetch operation:', error);
+    const handleAllRecipes = () => {
+        getAllRecipes()
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                // Set the retrieved recipes into state
+                console.log('All Recipes:', data);
+
+                data.forEach(recipe => {
+                    console.log(recipe.recipeName);
                 });
-        };
-    
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    };
+
+    const fetchRecipesByIds = async () => {
+        try {
+            // Check if userData exists
+            if (!userData) {
+                // Handle if userData is not available
+                return;
+            }
+            const recipes = [];
+            // Iterate over savedRecipes array
+            for (const recipeId of userData.savedRecipes) {
+                // Fetch recipe by ID
+                const response = await getRecipeById(recipeId);
+                if (response.ok) {
+                    // Parse and use the recipe data
+                    const recipeData = await response.json();
+                    console.log('RECIPES FULL:', recipeData);
+                    console.log('RECIPESS NAME:', recipeData.recipeName);
+                    recipes.push(recipeData);
+                    // You can set the recipe data in state or use it as needed
+                } else {
+                    throw new Error('Failed to fetch recipe');
+                }
+            }
+            setFetchedRecipes(recipes);
+        } catch (error) {
+            console.error('Error fetching recipes:', error);
+        }
+    };
+
 
     return (
 
@@ -82,9 +115,20 @@ export default function Profile() {
                             {userData.savedRecipes && userData.savedRecipes.map((recipe, index) => (
                                 <li key={index}>{recipe}</li>
                             ))}
-                           
+
                         </ul>
                         <button onClick={handleAllRecipes}>All Recipes</button>
+
+                        <button onClick={fetchRecipesByIds}>Fetch My Recipes</button>
+                        {/* Display fetched recipes */}
+                        <h2>Fetched Recipes</h2>
+                        <ul>
+                            {fetchedRecipes.map((recipe, index) => (
+                                <li key={index}>{recipe.recipeName}</li>
+                            ))}
+                        </ul>
+
+
 
 
                     </CardContent>

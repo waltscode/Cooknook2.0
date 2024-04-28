@@ -8,7 +8,7 @@ require('dotenv').config();
 router.route('/').delete(authMiddleware, deleteRecipe);
 
 router.route('/saved')
-.post(authMiddleware, saveRecipe).get(getAllTheRecipes);
+.post(authMiddleware, saveRecipe).get(getAllTheRecipes, getRecipeByTheId);
 
   router.route('/cuisine/:cuisine')
   .get(async (req, res) => {
