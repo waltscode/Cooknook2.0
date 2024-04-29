@@ -44,18 +44,23 @@ module.exports = {
       },
       // remove a book from `savedBooks`
       async deleteRecipe({ user, params }, res) {
-        const recipe = await recipe.findOneAndDelete({
-            _id: params.id,
-          });
-  
-          await User.findOneAndUpdate(
-            { _id: user._id },
-            { $pull: { savedRecipes: recipe._id } },
-            { new: true }
-          );
-        
-      
-        return res.json(recipe);
-      },
+        try {
+            // Delete the recipe from the database
+            const deletedRecipe = await Recipe.findByIdAndDelete(params.id);
+            
+            // Remove the recipe ID from the user's savedRecipes array
+            await User.findByIdAndUpdate(
+                user._id,
+                { $pull: { savedRecipes: params.id } },
+                { new: true }
+            );
+    
+            return res.json(deletedRecipe);
+        } catch (error) {
+            // Handle errors
+            console.error('Error deleting recipe:', error);
+            return res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
 
     };

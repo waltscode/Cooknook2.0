@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { getMe, getAllRecipes, getRecipeById } from '../utils/API';
+import { getMe, getAllRecipes, getRecipeById, deleteTheRecipe } from '../utils/API';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Auth from "../utils/auth";
@@ -88,10 +88,38 @@ export default function Profile() {
         }
     };
 
+    const handleDeleteRecipe = (recipe) => {
+        console.log('Recipe to delete:', recipe);
+        const token = Auth.loggedIn() ? Auth.getToken() : null;
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+        deleteTheRecipe(recipe, token) // Passing recipe._id instead of recipe
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Recipe deleted:', data);
+                // Remove the deleted recipe from the fetchedRecipes state
+                const updatedRecipes = fetchedRecipes.filter(recipe => recipe._id !== data._id);
+                setFetchedRecipes(updatedRecipes);
+            })
+            .catch(error => {
+                // Handle errors
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    };
+
+        
+
 
     return (
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4 backgrpic-ta">
             <div className="col-span-1">
                 <Card>
                     <div className="profile-card">
@@ -124,7 +152,8 @@ export default function Profile() {
                         <h2>Fetched Recipes</h2>
                         <ul>
                             {fetchedRecipes.map((recipe, index) => (
-                                <li key={index}>{recipe.recipeName}</li>
+                                <li key={index}>{recipe.recipeName}
+                                <button onClick={() => handleDeleteRecipe(recipe._id)}>Delete</button></li>
                             ))}
                         </ul>
 

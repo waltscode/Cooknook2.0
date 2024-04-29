@@ -62,6 +62,8 @@ export const saveRecipe = (obj, token) => {
   });
 };
 
+
+
 export const getAllRecipes = () => {
   return fetch('/api/recipes/saved', {
     method: 'GET',
@@ -79,3 +81,14 @@ export const getRecipeById = (id) => {
     },
   });
 }
+
+export const deleteTheRecipe = (id, token) => {
+  return fetch(`/api/recipes/saved/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: `Bearer ${token}`,
+          
+    },
+  });
+};

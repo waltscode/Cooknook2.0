@@ -10,6 +10,9 @@ router.route('/').delete(authMiddleware, deleteRecipe);
 router.route('/saved')
 .post(authMiddleware, saveRecipe).get(getAllTheRecipes, getRecipeByTheId);
 
+router.route('/saved/:id')
+  .delete(authMiddleware, deleteRecipe).get(getRecipeByTheId);
+
   router.route('/cuisine/:cuisine')
   .get(async (req, res) => {
     try {
@@ -50,7 +53,6 @@ router.route('/:id')
 
 
 
-router.route('/saved/:id')
-  .delete(authMiddleware, deleteRecipe).get(getRecipeByTheId);
+
 
 module.exports = router;
