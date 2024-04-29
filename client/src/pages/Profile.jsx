@@ -76,6 +76,7 @@ export default function Profile() {
                     const recipeData = await response.json();
                     console.log('RECIPES FULL:', recipeData);
                     console.log('RECIPESS NAME:', recipeData.recipeName);
+                    console.log('RECIPESS image:', recipeData.image);
                     recipes.push(recipeData);
                     // You can set the recipe data in state or use it as needed
                 } else {
@@ -114,13 +115,13 @@ export default function Profile() {
             });
     };
 
-        
+
 
 
     return (
 
-        <div className="grid grid-cols-3 gap-4 backgrpic-ta">
-            <div className="col-span-1">
+        <div className="grid grid-cols-6 gap-4 backgrpic-ta">
+            <div className="col-span-2">
                 <Card>
                     <div className="profile-card">
                         <div className="profile-picture">
@@ -130,30 +131,36 @@ export default function Profile() {
                 </Card>
             </div>
 
-            <div className="col-span-2">
-                <Card>
+            <div className="col-span-4">
+                <Card >
                     <div className="profile-info">
                         <h2>Welcome {userData.username}!</h2>
                         <p>Email associated with account: {userData.email}</p>
                     </div>
 
                     <CardContent>
-                        <h2>My Recipes</h2>
+                        {/* <h2>My Recipes</h2>
                         <ul>
                             {userData.savedRecipes && userData.savedRecipes.map((recipe, index) => (
                                 <li key={index}>{recipe}</li>
                             ))}
 
                         </ul>
-                        <button onClick={handleAllRecipes}>All Recipes</button>
+                        <button onClick={handleAllRecipes}>All Recipes</button> */}
 
                         <button onClick={fetchRecipesByIds}>Fetch My Recipes</button>
                         {/* Display fetched recipes */}
-                        <h2>Fetched Recipes</h2>
-                        <ul>
+                        {/* <h2>Fetched Recipes</h2> */}
+                        <ul className="grid grid-cols-4 gap-4">
                             {fetchedRecipes.map((recipe, index) => (
-                                <li key={index}>{recipe.recipeName}
-                                <button onClick={() => handleDeleteRecipe(recipe._id)}>Delete</button></li>
+                                <Card key={index}  >
+                                    <CardContent>
+                                        <h3>{recipe.recipeName}</h3>
+                                        <img src={recipe.image} alt={recipe.recipeName} />
+                                        {/* You can display other details of the recipe here */}
+                                        <button onClick={() => handleDeleteRecipe(recipe._id)}>Delete</button>
+                                    </CardContent>
+                                </Card>
                             ))}
                         </ul>
 
